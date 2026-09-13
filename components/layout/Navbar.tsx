@@ -7,10 +7,10 @@ import {navbar} from '@/data/navbar';
 
 const NAV_ITEMS = [
   { id: "hero", label: "Home" },
-  { id: "what-i-do", label: "What I Do" },
-  { id: "projects", label: "Projects" },
-  { id: "tech", label: "Tech Stack" },
+  { id: "services", label: "Services" },
+  { id: "our-team", label: "Our Team" },
   { id: "contact", label: "Contact" },
+  { id: "blog", label: "Blog" },
 ];
 
 export default function Navbar() {
