@@ -1,5 +1,5 @@
 export const navbar = {
     list: [
-        "Ketentuan", "Layanan", "Catatan", "Gallery", "Contact"
+        "Home", "Services", "Team", "Blog", "Contact"
     ]
 }

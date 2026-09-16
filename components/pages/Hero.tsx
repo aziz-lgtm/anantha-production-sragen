@@ -1,66 +1,73 @@
-import Image from 'next/image';
-import Owl from '@/public/owl-new.png';
-import Navbar from '@/components/layout/Navbar';
+export const hero = {
+  title: "One-Stop Solution Event yang Mewah dalam Design, tetapi Ramah di Kantong",
+  subtitle:
+    "Kami melayani mulai dari perencanaan konsep, eksekusi dekorasi Engagement yang artistik, pembuatan properti custom-made yang presisi, hingga sewa alat panggung yang aman dan andal. Dengan sistem satu pintu, kami menyederhanakan koordinasi antar-vendor agar Anda dapat menikmati momen berharga Anda dengan tenang.",
+};
 
+const services = [
+  "Bundle Lamaran",
+  "Dekorasi Panggung",
+  "Custom Property",
+  "Sewa Alat Panggung",
+];
+
+// No canvas, no "use client" needed here -- the light field lives in
+// InteractiveBackground, mounted once at the layout level. This section
+// only needs a transparent (or semi-transparent dark) background so that
+// field reads through it.
 export default function Hero() {
-    return (
-        // Changed to a full-width dark theme section
-        <section id='hero' className="relative w-full min-h-screen bg-gray-950 text-white flex flex-col">
-            <Navbar />
-            
-            {/* Main Content Container: Flex row for left/right split */}
-            <div className="flex flex-col lg:flex-row items-center justify-between flex-1 px-8 lg:px-24 py-16 gap-12 max-w-[1440px] mx-auto w-full">
-                
-                {/* Left Side: Title, Subtitle, and Description */}
-                <div className="w-full lg:w-1/2 flex flex-col justify-center gap-6">
-                    
-                    {/* Optional Badge (inspired by your reference image) */}
-                    <div className="inline-block px-4 py-2 bg-gray-900 border border-gray-700 rounded-full text-sm font-semibold text-gray-300 w-max">
-                        ⭐ One-Stop Solution Event
-                    </div>
-                    
-                    {/* H1 Title */}
-                    <h1 className="font-['Afacad_Flux'] text-5xl lg:text-7xl font-bold leading-tight">
-                        ANANTHA <br />
-                        <span className="text-gray-400">PRODUCTION</span>
-                    </h1>
-                    
-                    {/* Subtitle */}
-                    <h2 className="text-2xl font-semibold text-gray-200">
-                        Solusi Visual & Teknis Terintegrasi 
-                    </h2>
+  return (
+    <section className="relative flex min-h-[92vh] w-full items-center overflow-hidden">
+      {/* faint vignette to keep text legible over the light field */}
+      <div
+        className="pointer-events-none absolute inset-0"
+        style={{
+          background:
+            "radial-gradient(120% 90% at 20% 50%, rgba(11,20,16,0.75) 20%, rgba(11,20,16,0.15) 60%, rgba(11,20,16,0) 100%)",
+        }}
+      />
 
-                    {/* Paragraph derived from your Motto */}
-                    <p className="text-gray-400 text-lg leading-relaxed max-w-xl">
-                        Kami melayani mulai dari perencanaan konsep, eksekusi dekorasi Engagement yang artistik, pembuatan properti custom-made yang presisi, hingga sewa alat panggung yang aman dan andal. Dengan sistem satu pintu, kami menyederhanakan koordinasi antar-vendor agar Anda dapat menikmati momen berharga Anda dengan tenang.
-                    </p>
-                    
-                    {/* Call to Action Buttons (Matching the style of the reference image) */}
-                    <div className="flex gap-4 mt-6">
-                        <button className="px-8 py-3 bg-white text-black font-bold rounded-full hover:bg-gray-200 transition-colors">
-                            Booking Sekarang
-                        </button>
-                        <button className="px-8 py-3 bg-transparent border border-gray-500 text-white font-bold rounded-full hover:border-white transition-colors">
-                            Lihat Layanan
-                        </button>
-                    </div>
-                </div>
+      <div className="relative z-10 mx-auto w-full max-w-6xl px-6 py-24 md:px-10">
+        <div className="max-w-2xl">
+          <h1
+            className="font-serif text-[2.4rem] font-medium leading-[1.12] tracking-tight text-[#f3ecdd] md:text-[3.4rem] lg:text-[4rem]"
+            style={{ fontFamily: "'Fraunces', 'Iowan Old Style', serif" }}
+          >
+            {hero.title}
+          </h1>
 
-                {/* Right Side: Picture */}
-                <div className="w-full lg:w-1/2 flex justify-center lg:justify-end items-center">
-                    {/* Container for the image with rounded corners matching the reference */}
-                    <div className="relative w-[350px] h-[350px] lg:w-[500px] lg:h-[500px] bg-gray-900 rounded-3xl overflow-hidden shadow-2xl border border-gray-800 flex justify-center items-center">
-                        <Image 
-                            src={Owl} 
-                            alt='Anantha Production Mascot' 
-                            fill
-                            style={{ objectFit: 'cover' }}
-                            className="p-10" // Optional padding if your owl is a logo rather than a full-bleed photo
-                        />
-                    </div>
-                </div>
+          <p
+            className="mt-7 max-w-[56ch] text-[1.05rem] leading-[1.7] text-[#cdd3c8]/80 md:text-[1.125rem]"
+            style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}
+          >
+            {hero.subtitle}
+          </p>
 
-            </div>
-        </section>
-    );
+          <div
+            className="mt-9 flex flex-wrap items-center gap-x-6 gap-y-3"
+            style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}
+          >
+            {services.map((service, i) => (
+              <span key={service} className="flex items-center gap-6">
+                {i !== 0 && (
+                  <span className="h-3.5 w-px bg-[#c6a15b]/40" aria-hidden="true" />
+                )}
+                <span className="text-sm text-[#e8dcc4]/90">{service}</span>
+              </span>
+            ))}
+          </div>
+
+          <div className="mt-10">
+            <a
+              href="#konsultasi"
+              className="inline-flex items-center rounded-full border border-[#c6a15b] px-7 py-3 text-sm font-medium text-[#f3ecdd] transition-colors duration-300 hover:bg-[#c6a15b] hover:text-[#0b1410]"
+              style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}
+            >
+              Konsultasikan Acara Anda
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
 }
