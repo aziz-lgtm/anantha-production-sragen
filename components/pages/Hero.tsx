@@ -1,5 +1,6 @@
 
 import { hero, services } from "@/data/hero";
+import Image from "next/image"
 // No canvas, no "use client" needed here -- the light field lives in
 // InteractiveBackground, mounted once at the layout level. This section
 // only needs a transparent (or semi-transparent dark) background so that
