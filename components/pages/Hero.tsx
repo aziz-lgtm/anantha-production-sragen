@@ -1,16 +1,5 @@
-export const hero = {
-  title: "One-Stop Solution Event yang Mewah dalam Design, tetapi Ramah di Kantong",
-  subtitle:
-    "Kami melayani mulai dari perencanaan konsep, eksekusi dekorasi Engagement yang artistik, pembuatan properti custom-made yang presisi, hingga sewa alat panggung yang aman dan andal. Dengan sistem satu pintu, kami menyederhanakan koordinasi antar-vendor agar Anda dapat menikmati momen berharga Anda dengan tenang.",
-};
 
-const services = [
-  "Bundle Lamaran",
-  "Dekorasi Panggung",
-  "Custom Property",
-  "Sewa Alat Panggung",
-];
-
+import { hero, services } from "@/data/hero";
 // No canvas, no "use client" needed here -- the light field lives in
 // InteractiveBackground, mounted once at the layout level. This section
 // only needs a transparent (or semi-transparent dark) background so that
