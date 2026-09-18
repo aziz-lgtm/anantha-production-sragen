@@ -1,28 +1,46 @@
-import { Button } from "@/components/ui/button"
-
 export const services = {
-    title: "Apa yang Kami Kerjakan",
-    subtitle: "Kami melayani Pembuatan Custom Property, Sewa Alat Panggung, Dekorasi Panggung, dan Bundle Lamaran. Click pada cards di bawah untuk detailnya: ",
-}
+  title: "Apa yang Kami Kerjakan",
+  subtitle:
+    "Kami melayani Pembuatan Custom Property, Sewa Alat Panggung, Dekorasi Panggung, dan Bundle Lamaran. Klik pada card di bawah untuk detailnya:",
+};
 
-// 4 cards: each cards will directs into the new page that will list all of products services.
-export const customProperty = {
-    title: "Custom Property",
-    subtitle: "Pembuatan property panggung sesuai request yang diinginkan"
-}
+export type ServiceCard = {
+  slug: string;
+  title: string;
+  subtitle: string;
+};
 
-export const sewaAlatPanggung = {
-    title: "Sewa Alat Panggung",
-    subtitle: "Kami menyediakan setup-setup panggung yang professional dan mewah dengan harga yang terjangkau",
-}
+export const customProperty: ServiceCard = {
+  slug: "custom-property",
+  title: "Custom Property",
+  subtitle: "Pembuatan property panggung sesuai request yang diinginkan",
+};
 
-export const dekorasiPanggung = {
-    title: "Dekorasi Panggung",
-    subtitle: "Mengerjakan dekorasi panggung yang berbeda dari yang lain tetapi mewah",
-}
+export const sewaAlatPanggung: ServiceCard = {
+  slug: "sewa-alat-panggung",
+  title: "Sewa Alat Panggung",
+  subtitle:
+    "Kami menyediakan setup-setup panggung yang professional dan mewah dengan harga yang terjangkau",
+};
 
-export const bundleLamaran = {
-    title: "Bundle Lamaran",
-    subtitle: "Bundle untuk acara lamaran",
-}
+export const dekorasiPanggung: ServiceCard = {
+  slug: "dekorasi-panggung",
+  title: "Dekorasi Panggung",
+  subtitle: "Mengerjakan dekorasi panggung yang berbeda dari yang lain tetapi mewah",
+};
 
+export const bundleLamaran: ServiceCard = {
+  slug: "bundle-lamaran",
+  title: "Bundle Lamaran",
+  subtitle: "Bundle untuk acara lamaran",
+};
+
+// Order the cards render in the grid. Each slug maps 1:1 to a folder
+// under app/services/<slug>/page.tsx — that folder IS the route, no
+// router config needed.
+export const serviceCards: ServiceCard[] = [
+  customProperty,
+  sewaAlatPanggung,
+  dekorasiPanggung,
+  bundleLamaran,
+];

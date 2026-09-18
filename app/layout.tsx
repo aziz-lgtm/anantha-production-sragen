@@ -40,7 +40,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full justify-center">
         <CustomCursor />
         <InteractiveBackground />
-        {children}
+        <div className="relative z-10">{children}</div>
         </body>
     </html>
   );
