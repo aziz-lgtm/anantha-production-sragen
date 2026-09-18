@@ -10,7 +10,8 @@ import {
   formatRupiah,
   WHATSAPP_NUMBER,
   REFERRAL_CODE,
-  REFERRAL_DISCOUNT,
+  isSpecialWeekendPackage,
+  getDiscount,
   type Product,
 } from "@/data/services/sewa-alat-panggung";
 
@@ -20,6 +21,8 @@ export default function AlatPanggungContent() {
   const [cart, setCart] = useState<Record<string, CartLine>>({});
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateUntil, setDateUntil] = useState("");
   const [referral, setReferral] = useState("");
 
   const addToCart = (product: Product) => {
@@ -51,8 +54,18 @@ export default function AlatPanggungContent() {
     [lines]
   );
   const referralValid = referral.trim().toUpperCase() === REFERRAL_CODE;
-  const discount = referralValid ? subtotal * REFERRAL_DISCOUNT : 0;
+  const isWeekendPackage = isSpecialWeekendPackage(dateFrom, dateUntil);
+  const { amount: discount, label: discountLabel } = getDiscount(
+    subtotal,
+    dateFrom,
+    dateUntil,
+    referralValid
+  );
   const total = subtotal - discount;
+
+  // referral was typed and valid, but got overridden because the chosen
+  // range already qualifies for the bigger 3-day weekend package discount
+  const referralOverridden = referralValid && isWeekendPackage;
 
   const canSubmit = name.trim().length > 0 && phone.trim().length > 0 && lines.length > 0;
 
@@ -73,14 +86,13 @@ export default function AlatPanggungContent() {
       "",
       `Nama: ${name}`,
       `No. HP: ${phone}`,
+      dateFrom && dateUntil ? `Tanggal Sewa: ${dateFrom} s/d ${dateUntil}` : "",
       "",
       "Item:",
       itemLines,
       "",
       `Subtotal: ${formatRupiah(subtotal)}`,
-      referralValid
-        ? `Kode referral: ${REFERRAL_CODE} (diskon 10%: -${formatRupiah(discount)})`
-        : "",
+      discountLabel ? `${discountLabel}: -${formatRupiah(discount)}` : "",
       `Total: ${formatRupiah(total)}`,
     ]
       .filter(Boolean)
@@ -194,6 +206,39 @@ export default function AlatPanggungContent() {
               />
             </div>
             <div>
+              <label className="text-xs text-[#cdd3c8]/70">Tanggal Sewa</label>
+              <div className="mt-1 grid grid-cols-2 gap-3">
+                <div>
+                  <span className="text-[10px] uppercase tracking-wide text-[#cdd3c8]/50">
+                    Dari
+                  </span>
+                  <input
+                    type="date"
+                    value={dateFrom}
+                    onChange={(e) => setDateFrom(e.target.value)}
+                    className="mt-1 w-full rounded-lg border border-[#c6a15b]/30 bg-[#0b1410] px-3 py-2 text-sm text-[#f3ecdd] outline-none [color-scheme:dark] focus:border-[#c6a15b]"
+                  />
+                </div>
+                <div>
+                  <span className="text-[10px] uppercase tracking-wide text-[#cdd3c8]/50">
+                    Sampai
+                  </span>
+                  <input
+                    type="date"
+                    value={dateUntil}
+                    onChange={(e) => setDateUntil(e.target.value)}
+                    className="mt-1 w-full rounded-lg border border-[#c6a15b]/30 bg-[#0b1410] px-3 py-2 text-sm text-[#f3ecdd] outline-none [color-scheme:dark] focus:border-[#c6a15b]"
+                  />
+                </div>
+              </div>
+              {isWeekendPackage && (
+                <p className="mt-1 text-xs text-[#c6a15b]">
+                  Paket 3 hari penuh (Jumat–Minggu) terdeteksi — diskon 50%
+                  otomatis diterapkan.*
+                </p>
+              )}
+            </div>
+            <div>
               <label className="text-xs text-[#cdd3c8]/70">Kode Referral (opsional)</label>
               <input
                 value={referral}
@@ -207,12 +252,21 @@ export default function AlatPanggungContent() {
                     referralValid ? "text-[#c6a15b]" : "text-[#cdd3c8]/50"
                   }`}
                 >
-                  {referralValid
+                  {referralOverridden
+                    ? "Kode valid, tapi tidak diterapkan karena diskon paket 3 hari sudah aktif dan lebih besar.*"
+                    : referralValid
                     ? "Kode valid — diskon 10% diterapkan."
                     : "Kode tidak dikenali."}
                 </p>
               )}
             </div>
+
+            <p className="text-xs leading-relaxed text-[#cdd3c8]/50">
+              *Diskon 50% hanya berlaku untuk sewa paket penuh 3 hari berturut-turut
+              (Jumat–Sabtu–Minggu), bukan untuk satu hari saja meskipun jatuh di
+              akhir pekan. Diskon ini tidak dapat digabungkan dengan kode
+              referral — sistem akan otomatis menerapkan salah satu yang berlaku.
+            </p>
           </div>
         </div>
 
@@ -243,9 +297,9 @@ export default function AlatPanggungContent() {
                 <span>Subtotal</span>
                 <span>{formatRupiah(subtotal)}</span>
               </div>
-              {referralValid && (
+              {discountLabel && (
                 <div className="flex justify-between text-[#c6a15b]">
-                  <span>Diskon (10%)</span>
+                  <span>{discountLabel}</span>
                   <span>-{formatRupiah(discount)}</span>
                 </div>
               )}
