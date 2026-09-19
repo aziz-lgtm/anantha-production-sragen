@@ -13,7 +13,7 @@ function getInitials(name: string): string {
 
 export default function TeamSection() {
   return (
-    <section className="relative w-full px-6 py-24 md:px-10">
+    <section className="relative w-full px-6 py-24 md:px-10" id="our-team">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-2xl">
           <h2

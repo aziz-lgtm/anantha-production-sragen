@@ -8,7 +8,7 @@ import StagePhoto from "@/public/hero-stage-photo.jpeg";
 // field reads through it.
 export default function Hero() {
   return (
-    <section className="relative flex w-full lg:min-h-[900px] items-center overflow-hidden">
+    <section className="relative flex w-full lg:min-h-[900px] items-center overflow-hidden" id="hero">
       {/* faint vignette to keep text legible over the light field */}
       <Navbar />
 
@@ -62,7 +62,7 @@ export default function Hero() {
               column width on lg+. aspect-[3/2] matches the photo's own
               proportions (2560x1706) so nothing awkward gets cropped */}
           <div className="w-full max-w-md shrink-0 sm:max-w-lg lg:w-[480px] lg:max-w-none">
-            <div className="relative aspect-[3/2] overflow-hidden rounded-2xl border border-[#c6a15b]/30 shadow-lg shadow-black/40">
+            <div className="relative aspect-[3/2] overflow-hidden rounded-2xl shadow-lg shadow-black/40">
               <Image
                 src={StagePhoto}
                 alt="Dokumentasi panggung Anantha Production"

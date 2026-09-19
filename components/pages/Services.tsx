@@ -8,7 +8,7 @@ import { services, serviceCards } from "@/data/services";
 // prefetches it automatically when the card scrolls into view.
 export default function ServicesSection() {
   return (
-    <section className="relative w-full px-6 py-24 md:px-10">
+    <section className="relative w-full px-6 py-24 md:px-10" id="services">
       <div className="mx-auto max-w-6xl">
         <div className="max-w-2xl">
           <h2
