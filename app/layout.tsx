@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono, Noto_Sans, Playfair_Display, Afacad_Flux } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans, Playfair_Display, Afacad_Flux,} from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import InteractiveBackground from "@/components/InteractiveBackground";
