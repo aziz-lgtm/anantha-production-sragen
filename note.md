@@ -6,4 +6,4 @@ ketentuan, layanan: layanan; extra item; make up artist; , catatan, gallery cont
 * *Visual Model & Commercial Talent* TSANIA
 * *Beauty & Fashion Specialist* RANA DINAR ALGADISA
 * *Promotional Model & Marketing Executive* DINAN
-* *Web Architect & Digital Developer* AZIZ AHMAD FAIZAL ABROR
+* *Head of Engineering & IT* AZIZ AHMAD FAIZAL ABROR
