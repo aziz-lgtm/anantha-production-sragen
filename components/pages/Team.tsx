@@ -35,8 +35,8 @@ function TeamMemberCard({ person }: { person: (typeof team.people)[0] }) {
   return (
     <Card className="flex flex-col items-center text-center bg-transparent border-none shadow-none p-0">
       <CardHeader className="p-0 flex flex-col items-center">
-        {/* Ukuran ditambah untuk md ke atas (md:h-44 md:w-44) */}
-        <div className="relative h-28 w-28 md:h-44 md:w-44 overflow-hidden rounded-full border-2 border-[#c6a15b]/60 bg-[#101a15]">
+        {/* Warna background diubah menjadi abu-abu bg-[#9ea3a8] agar menyatu dengan background foto studio */}
+        <div className="relative h-28 w-28 md:h-44 md:w-44 overflow-hidden rounded-full border-2 border-[#c6a15b]/60 bg-[#9ea3a8]">
           {photos.length > 0 ? (
             <Carousel
               opts={{ loop: true }}
