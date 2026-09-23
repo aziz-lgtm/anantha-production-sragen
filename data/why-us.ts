@@ -1,5 +1,5 @@
 import type { LucideIcon } from "lucide-react";
-import { BadgePercent, Award, ShieldCheck, HeartHandshake } from "lucide-react";
+import { BadgePercent, Award, ShieldCheck, HeartHandshake, Zap} from "lucide-react";
 
 // No section heading was given for Why Us (unlike Hero/Services, which had
 // one) -- wrote a plain one to fill the gap. Edit or remove freely.
@@ -24,13 +24,13 @@ export const whyUs: WhyUsItem[] = [
   {
     title: "Berkualitas",
     description:
-      "Kami pernah menjadi penyedia alat panggung pada acara perkumpulan raja-raja nusantara di Kota Sragen",
+      "Kami pernah di percaya untuk mendekorasi pada acara MAKN (Majelis Adat Kerajaan Nusantara) yang diselenggarakan di Sragen waktu itu",
     icon: Award,
   },
   {
     title: "Jelas dan Terpercaya",
     description:
-      "Semua deal secara secara jelas dan terang-terangan kepada client yang bersangkutan, tanpa ada yang abu-abu",
+      "Semua deal secara secara jelas dan terang-terangan kepada client yang bersangkutan, tanpa ada yang fee tersembunyi",
     icon: ShieldCheck,
   },
   {
@@ -40,5 +40,13 @@ export const whyUs: WhyUsItem[] = [
     description:
       "Tim kami selalu siap membantu dengan komunikasi yang hangat dan responsif di setiap tahap acara Anda.",
     icon: HeartHandshake,
+  },
+  {
+    title: "Cepat & Tepat",
+    // left blank in the source data -- placeholder below, swap for the
+    // real copy whenever you have it
+    description:
+      "Hasil maksimal dalam waktu minimal. Solusi instan dengan tingkat akurasi tinggi",
+    icon: Zap,
   },
 ];
