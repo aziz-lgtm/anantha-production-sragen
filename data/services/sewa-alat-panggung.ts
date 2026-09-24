@@ -1,7 +1,7 @@
 export const popAlatPanggung = {
   title: "Alat Panggung",
   description:
-    "Menyediakan layanan sewa perlengkapan teknis panggung profesional seperti sound system, lighting, rigging, dan stage floor berkualitas tinggi untuk menjamin kelancaran acara Anda.",
+    "Kami menyediakan layanan sewa perlengkapan teknis panggung profesional untuk menjamin kelancaran event Anda.",
 };
 
 export type Product = {

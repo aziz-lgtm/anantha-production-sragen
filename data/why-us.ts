@@ -30,7 +30,7 @@ export const whyUs: WhyUsItem[] = [
   {
     title: "Jelas dan Terpercaya",
     description:
-      "Semua deal secara secara jelas dan terang-terangan kepada client yang bersangkutan, tanpa ada yang fee tersembunyi",
+      "Semua deal secara jelas dan terang-terangan kepada client yang bersangkutan, tanpa ada yang fee tersembunyi",
     icon: ShieldCheck,
   },
   {
@@ -38,7 +38,7 @@ export const whyUs: WhyUsItem[] = [
     // left blank in the source data -- placeholder below, swap for the
     // real copy whenever you have it
     description:
-      "Tim kami selalu siap membantu dengan komunikasi yang hangat dan responsif di setiap tahap acara Anda.",
+      "Tim kami selalu siap membantu dengan komunikasi yang hangat dan responsif di setiap tahap.",
     icon: HeartHandshake,
   },
   {

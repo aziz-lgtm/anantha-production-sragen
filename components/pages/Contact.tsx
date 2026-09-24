@@ -4,7 +4,7 @@ import { contact } from "@/data/contact";
 // just needs to read through the InteractiveBackground light field.
 export default function Contact() {
   // 1. Definisikan pesan otomatis yang ingin dikirim
-  const whatsappMessage = encodeURIComponent("Halo, saya ingin bertanya mengenai layanan Anda.");
+  const whatsappMessage = encodeURIComponent("Halo, saya ingin bertanya mengenai layanan dari Anantha Production.");
 
   // 2. Gabungkan link dasar dari data dengan parameter pesan (?text=...)
   // Kita pastikan dulu jika contact.links.whatsapp ada isinya
