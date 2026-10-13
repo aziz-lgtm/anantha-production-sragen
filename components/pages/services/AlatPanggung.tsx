@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Music2, Plus, Minus } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { Plus, Minus } from "lucide-react";
+import { toPng } from "html-to-image";
 import { Button } from "@/components/ui/button";
 import {
   popAlatPanggung,
@@ -24,6 +25,7 @@ export default function AlatPanggungContent() {
   const [dateFrom, setDateFrom] = useState("");
   const [dateUntil, setDateUntil] = useState("");
   const [referral, setReferral] = useState("");
+  const invoiceRef = useRef<HTMLDivElement>(null);
 
   const addToCart = (product: Product) => {
     setCart((prev) => {
@@ -69,8 +71,29 @@ export default function AlatPanggungContent() {
 
   const canSubmit = name.trim().length > 0 && phone.trim().length > 0 && lines.length > 0;
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (!canSubmit) return;
+
+    // open the tab synchronously so the popup blocker doesn't kill it after the await
+    const waWindow = window.open("", "_blank");
+
+    // --- invoice HTML -> PNG (downloaded for the customer to attach in WhatsApp) ---
+    try {
+      if (invoiceRef.current) {
+        const dataUrl = await toPng(invoiceRef.current, {
+          pixelRatio: 2,
+          backgroundColor: "#ffffff",
+        });
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = `invoice-${name.trim().replace(/\s+/g, "-").toLowerCase()}.png`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+      }
+    } catch (err) {
+      console.error("Gagal membuat invoice PNG", err);
+    }
 
     const itemLines = lines
       .map(
@@ -94,12 +117,18 @@ export default function AlatPanggungContent() {
       `Subtotal: ${formatRupiah(subtotal)}`,
       discountLabel ? `${discountLabel}: -${formatRupiah(discount)}` : "",
       `Total: ${formatRupiah(total)}`,
+      "",
+      "Invoice (PNG) saya lampirkan di chat ini.",
     ]
       .filter(Boolean)
       .join("\n");
 
     const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`;
-    window.open(url, "_blank");
+    if (waWindow) {
+      waWindow.location.href = url;
+    } else {
+      window.open(url, "_blank");
+    }
   };
 
   return (
@@ -119,8 +148,7 @@ export default function AlatPanggungContent() {
         </p>
       </div>
 
-      {/* product grid -- swap the Music2 icon per-card for a real product
-          photo (e.g. next/image) once you have assets */}
+      {/* product grid */}
       <div className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
         {products.map((product) => {
           const qty = cart[product.nama]?.qty ?? 0;
@@ -130,8 +158,14 @@ export default function AlatPanggungContent() {
               key={product.nama}
               className="flex flex-col rounded-2xl border border-[#c6a15b]/25 bg-[#101a15] p-5"
             >
-              <div className="flex h-28 items-center justify-center rounded-xl bg-[#0b1410]">
-                <Music2 className="h-10 w-10 text-[#c6a15b]" strokeWidth={1.5} />
+              <div className="flex h-28 items-center justify-center overflow-hidden rounded-xl bg-[#0b1410]">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={product.gambar}
+                  alt={product.nama}
+                  loading="lazy"
+                  className="h-full w-full object-contain"
+                />
               </div>
               <h3
                 className="mt-4 text-base font-medium text-[#f3ecdd]"
@@ -322,6 +356,79 @@ export default function AlatPanggungContent() {
               Isi nama, No. HP, dan pilih minimal satu item untuk melanjutkan.
             </p>
           )}
+          <h3 className="-mt-12 text-xs text-[#cdd3c8]/50">
+              Cara Pesan
+            </h3>
+            <p className="-mt-15 text-xs text-[#cdd3c8]/50">
+              1. setelah isi data diri, anda akan secara otomatis mendapat faktur invoice berupa gambar dengan cara tekan &quot;pesan via whatsapp&quot;
+              <br />
+              2. ketika anda diarahkan ke halaman kosong, kembali lagi ke halaman ini
+              <br />
+              3. setelah itu, tunggu halaman kosong tadi hingga ada notifikasi untuk kirim pesan via whatsapp
+              <br />
+              4. anda akan diberikan pesan otomatis, serta anda wajib menyertakan faktur invoice yang tadi telah anda dapatkan
+            </p>
+        </div>
+      </div>
+
+      {/* hidden invoice -- off-screen, only used to render the PNG */}
+      <div
+        aria-hidden
+        style={{ position: "fixed", left: "-10000px", top: 0, pointerEvents: "none" }}
+      >
+        <div
+          ref={invoiceRef}
+          style={{
+            width: 520,
+            padding: 32,
+            background: "#ffffff",
+            color: "#111111",
+            fontFamily: "system-ui, sans-serif",
+            fontSize: 14,
+          }}
+        >
+          <div style={{ fontSize: 22, fontWeight: 700 }}>INVOICE</div>
+          <div style={{ color: "#666666", marginBottom: 16 }}>
+            Sewa Alat Panggung · {new Date().toLocaleDateString("id-ID")}
+          </div>
+          <div>Nama: {name}</div>
+          <div>No. HP: {phone}</div>
+          {dateFrom && dateUntil && (
+            <div>
+              Tanggal Sewa: {dateFrom} s/d {dateUntil}
+            </div>
+          )}
+          <table style={{ width: "100%", marginTop: 16, borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ borderBottom: "2px solid #111111", textAlign: "left" }}>
+                <th style={{ padding: "6px 0" }}>Item</th>
+                <th>Qty</th>
+                <th style={{ textAlign: "right" }}>Harga</th>
+              </tr>
+            </thead>
+            <tbody>
+              {lines.map((l) => (
+                <tr key={l.product.nama} style={{ borderBottom: "1px solid #dddddd" }}>
+                  <td style={{ padding: "6px 0" }}>{l.product.nama}</td>
+                  <td>{l.qty}</td>
+                  <td style={{ textAlign: "right" }}>
+                    {formatRupiah(parsePrice(l.product.harga) * l.qty)}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div style={{ marginTop: 16, textAlign: "right" }}>
+            <div>Subtotal: {formatRupiah(subtotal)}</div>
+            {discountLabel && (
+              <div>
+                {discountLabel}: -{formatRupiah(discount)}
+              </div>
+            )}
+            <div style={{ fontSize: 18, fontWeight: 700, marginTop: 4 }}>
+              Total: {formatRupiah(total)}
+            </div>
+          </div>
         </div>
       </div>
     </div>

@@ -1,22 +1,29 @@
-import { hero, services } from "@/data/hero";
-import Image from "next/image"
+"use client";
+
+import { useRef } from "react";
+import Autoplay from "embla-carousel-autoplay";
+import Image from "next/image";
+import { hero, services, heroPhoto } from "@/data/hero";
 import Navbar from "../layout/Navbar";
-import StagePhoto from "@/public/hero-stage-photo.jpeg";
-// No canvas, no "use client" needed here -- the light field lives in
-// InteractiveBackground, mounted once at the layout level. This section
-// only needs a transparent (or semi-transparent dark) background so that
-// field reads through it.
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+
+// Slides come straight from the heroPhoto object in the data file.
+const slides = Object.values(heroPhoto);
+
 export default function Hero() {
+  const autoplay = useRef(Autoplay({ delay: 4000, stopOnInteraction: false }));
+
   return (
     <section className="relative flex w-full lg:min-h-[900px] items-center overflow-hidden" id="hero">
-      {/* faint vignette to keep text legible over the light field */}
       <Navbar />
 
       <div className="relative z-10 mx-auto w-full max-w-[1226px] px-6 py-24 pt-38 md:px-10">
-        {/* flex-col on small screens (photo stacks below the text, full
-            width); flex-row on lg+ (photo sits beside the text in its
-            own reserved column). Real layout space, so it can never
-            overlap the text at any width. */}
         <div className="flex flex-col items-center gap-12 lg:flex-row lg:items-center lg:justify-between lg:gap-10">
           <div className="max-w-2xl">
             <h1
@@ -49,7 +56,7 @@ export default function Hero() {
 
             <div className="mt-10">
               <a
-                href="#konsultasi"
+                href="#services"
                 className="inline-flex items-center rounded-full border border-[#c6a15b] px-7 py-3 text-sm font-medium text-[#f3ecdd] transition-colors duration-300 hover:bg-[#c6a15b] hover:text-[#0b1410]"
                 style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}
               >
@@ -58,20 +65,34 @@ export default function Hero() {
             </div>
           </div>
 
-          {/* stage documentation photo -- full width on mobile, fixed
-              column width on lg+. aspect-[3/2] matches the photo's own
-              proportions (2560x1706) so nothing awkward gets cropped */}
+          {/* shadcn Carousel -- same size as the original photo:
+              full width on mobile, 480px column on lg+, aspect 3:2, rounded-2xl */}
           <div className="w-full max-w-md shrink-0 sm:max-w-lg lg:w-[480px] lg:max-w-none">
-            <div className="relative aspect-[3/2] overflow-hidden rounded-2xl shadow-lg shadow-black/40">
-              <Image
-                src={StagePhoto}
-                alt="Dokumentasi panggung Anantha Production"
-                fill
-                sizes="(min-width: 1024px) 480px, 90vw"
-                className="object-cover"
-                priority
-              />
-            </div>
+            <Carousel
+              opts={{ loop: true }}
+              // eslint-disable-next-line react-hooks/refs
+              plugins={[autoplay.current]}
+              className="overflow-hidden rounded-2xl shadow-lg shadow-black/40"
+            >
+              <CarouselContent className="ml-0">
+                {slides.map((src, i) => (
+                  <CarouselItem key={src} className="pl-0">
+                    <div className="relative aspect-[1/1]">
+                      <Image
+                        src={src}
+                        alt={`Dokumentasi panggung Anantha Production ${i + 1}`}
+                        fill
+                        sizes="(min-width: 1024px) 480px, 90vw"
+                        priority={i === 0}
+                        className="object-cover"
+                      />
+                    </div>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-3 hidden" />
+              <CarouselNext className="right-3 hidden" />
+            </Carousel>
           </div>
         </div>
       </div>

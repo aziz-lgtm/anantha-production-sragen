@@ -8,14 +8,15 @@ export type Product = {
   nama: string;
   layanan: string;
   harga: string; // kept as the raw display string, e.g. "600,000"
+  foto: string; // DITAMBAH
 };
 
 export const products: Product[] = [
-  { nama: "Classic Botanica Vista", layanan: "Decor Only", harga: "600,000" },
-  { nama: "Rustic Warm Vista", layanan: "Decor Only", harga: "700,000" },
-  { nama: "Ethernal Horizon Vista", layanan: "Decor Only", harga: "700,000" },
-  { nama: "Pure Canvas Elegance", layanan: "Mengiringi Musik", harga: "800,000" },
-  { nama: "Floral Radial Elegance", layanan: "Decor Only", harga: "900,000" },
+  { nama: "Classic Botanical Vista", layanan: "Decor Only", harga: "600,000", foto: "/CLASSIC-BOTANICAL-VISTA.png" },
+  { nama: "Rustic Warmth Vista", layanan: "Decor Only", harga: "700,000", foto: "/RUSTIC-WARMTH-VISTA.png" },
+  { nama: "Ethereal Horizon Vista", layanan: "Decor Only", harga: "700,000", foto: "/ETHEREAL-HORIZON-VISTA.png" },
+  { nama: "Pure Canvas Elegance", layanan: "Mengiringi Musik", harga: "800,000", foto: "/PURE-CANVAS-ELEGANCE.png" },
+  { nama: "Floral Radiance Elegance", layanan: "Decor Only", harga: "900,000", foto: "/FLORAL-RADIANCE-ELEGANCE.jpg" },
 ];
 
 // +62 881-2783-841 with the "+" and separators stripped -- exact format
@@ -45,3 +46,7 @@ export function parsePrice(raw: string): number {
 export function formatRupiah(value: number): string {
   return `Rp${value.toLocaleString("id-ID")}`;
 }
+
+export const heroPhoto = {
+    pic: ""
+  }

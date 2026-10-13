@@ -10,3 +10,11 @@ export const services = [
   "Custom Property",
   "Sewa Alat Panggung",
 ];
+
+export const heroPhoto = {
+    pic: "/hero-stage-photo.jpeg",
+    pic2: "/dekor1.jpeg",
+    pic3: "/dekor2.jpeg",
+    pic4: "/dekor3.jpeg",
+    pic5: "/dekor4.jpeg",
+  }

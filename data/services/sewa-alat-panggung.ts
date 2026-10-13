@@ -7,15 +7,61 @@ export const popAlatPanggung = {
 export type Product = {
   nama: string;
   kegunaan: string;
-  harga: string; // kept as the raw display string, e.g. "300,000"
+  harga: string; // kept as the raw display string, e.g. "25,000"
+  gambar: string; // path inside /public
 };
 
+const IMG_DIR = "/AUDIO-DAN-ALAT-MUSIK";
+
 export const products: Product[] = [
-  { nama: "Gitar", kegunaan: "Mengiringi Musik", harga: "300,000" },
-  { nama: "Drum", kegunaan: "Mengiringi Musik", harga: "300,000" },
-  { nama: "Violin", kegunaan: "Mengiringi Musik", harga: "300,000" },
-  { nama: "Bass Guitar", kegunaan: "Mengiringi Musik", harga: "300,000" },
-  { nama: "Piano", kegunaan: "Mengiringi Musik", harga: "1,000,000" },
+  {
+    nama: "Guitar Nylon",
+    kegunaan: "Mengiringi Musik",
+    harga: "25,000",
+    gambar: `${IMG_DIR}/guitar-nylon.png`,
+  },
+  {
+    nama: "Guitar Yamaha CPX600",
+    kegunaan: "Mengiringi Musik",
+    harga: "50,000",
+    gambar: `${IMG_DIR}/guitar-yamaha-cpx600.png`,
+  },
+  {
+    nama: "Kabel Jack",
+    kegunaan: "Menyambungkan Alat Musik",
+    harga: "5,000",
+    gambar: `${IMG_DIR}/kabel-jack.png`,
+  },
+  {
+    nama: "Mic Advance Wireless (Isi 2)",
+    kegunaan: "Memperjelas Suara",
+    harga: "25,000",
+    gambar: `${IMG_DIR}/mic-advance-wireless.png`,
+  },
+  {
+    nama: "Recorder",
+    kegunaan: "Mengiringi Musik",
+    harga: "5,000",
+    gambar: `${IMG_DIR}/recorder.png`,
+  },
+  {
+    nama: "Sound Aktif",
+    kegunaan: "Pengeras Suara",
+    harga: "75,000",
+    gambar: `${IMG_DIR}/sound-aktif.png`,
+  },
+  {
+    nama: "Stand Mic",
+    kegunaan: "Penyangga Mic",
+    harga: "15,000",
+    gambar: `${IMG_DIR}/stand-mic.png`,
+  },
+  {
+    nama: "Suling Bambu",
+    kegunaan: "Mengiringi Musik",
+    harga: "5,000",
+    gambar: `${IMG_DIR}/suling-bambu.png`,
+  },
 ];
 
 // +62 881-2783-841 with the "+" and separators stripped -- this is the
