@@ -356,18 +356,6 @@ export default function AlatPanggungContent() {
               Isi nama, No. HP, dan pilih minimal satu item untuk melanjutkan.
             </p>
           )}
-          <h3 className="-mt-12 text-xs text-[#cdd3c8]/50">
-              Cara Pesan
-            </h3>
-            <p className="-mt-15 text-xs text-[#cdd3c8]/50">
-              1. setelah isi data diri, anda akan secara otomatis mendapat faktur invoice berupa gambar dengan cara tekan &quot;pesan via whatsapp&quot;
-              <br />
-              2. ketika anda diarahkan ke halaman kosong, kembali lagi ke halaman ini
-              <br />
-              3. setelah itu, tunggu halaman kosong tadi hingga ada notifikasi untuk kirim pesan via whatsapp
-              <br />
-              4. anda akan diberikan pesan otomatis, serta anda wajib menyertakan faktur invoice yang tadi telah anda dapatkan
-            </p>
         </div>
       </div>
 

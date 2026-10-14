@@ -1,10 +1,12 @@
 "use client";
 
-import { useMemo, useState } from "react";
-import { Sparkles, Plus, Minus } from "lucide-react";
+import { useMemo, useRef, useState } from "react";
+import { toPng } from "html-to-image";
+import { Plus, Minus } from "lucide-react";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import {
-  popDekorPanggung,
+  popBundleLamaran,
   products,
   parsePrice,
   formatRupiah,
@@ -16,13 +18,20 @@ import {
 
 type CartLine = { product: Product; qty: number };
 
-export default function DekorasiPanggungContent() {
+// +62 881-2783-841 in wa.me format (digits only, with country code)
+const INVOICE_WA_NUMBER = "628812783841";
+
+export default function BundleLamaranContent() {
+  const invoiceRef = useRef<HTMLDivElement>(null);
   const [cart, setCart] = useState<Record<string, CartLine>>({});
   const [name, setName] = useState("");
   const [phone, setPhone] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateUntil, setDateUntil] = useState("");
   const [referral, setReferral] = useState("");
+  const [downloading, setDownloading] = useState(false);
+  const [invoiceUrl, setInvoiceUrl] = useState<string | null>(null);
+  const [showShare, setShowShare] = useState(false);
 
   const addToCart = (product: Product) => {
     setCart((prev) => {
@@ -47,7 +56,7 @@ export default function DekorasiPanggungContent() {
     });
   };
 
-  const lines = Object.values(cart);
+  const lines = useMemo(() => Object.values(cart), [cart]);
   const subtotal = useMemo(
     () => lines.reduce((sum, l) => sum + parsePrice(l.product.harga) * l.qty, 0),
     [lines]
@@ -71,7 +80,7 @@ export default function DekorasiPanggungContent() {
       .join("\n");
 
     const message = [
-      "Halo, saya ingin memesan Dekorasi Panggung.",
+      "Halo, saya ingin memesan paket Bundle Lamaran.",
       "",
       `Nama: ${name}`,
       `No. HP: ${phone}`,
@@ -91,6 +100,81 @@ export default function DekorasiPanggungContent() {
     window.open(url, "_blank");
   };
 
+  const handleDownloadInvoice = async () => {
+    if (!invoiceRef.current || !canSubmit || downloading) return;
+
+    setDownloading(true);
+    try {
+      // make sure custom fonts are loaded before capturing
+      if (document.fonts?.ready) await document.fonts.ready;
+
+      const options = {
+        cacheBust: true,
+        pixelRatio: 2,
+        backgroundColor: "#0b1410",
+      };
+
+      // first call "warms up" fonts/styles (fixes blank/wrong fonts on Safari),
+      // second call is the real result
+      await toPng(invoiceRef.current, options);
+      const dataUrl = await toPng(invoiceRef.current, options);
+
+      const safeName = name.trim().replace(/\s+/g, "-") || "bundle-lamaran";
+      const link = document.createElement("a");
+      link.download = `invoice-${safeName}.png`;
+      link.href = dataUrl;
+      link.click();
+
+      // open the share popup
+      setInvoiceUrl(dataUrl);
+      setShowShare(true);
+    } catch (err) {
+      console.error("Gagal membuat invoice:", err);
+    } finally {
+      setDownloading(false);
+    }
+  };
+
+  // Opens a chat with the target number. wa.me can only carry text, not images,
+  // so the user attaches the downloaded PNG manually in the chat.
+  const handleOpenWhatsApp = () => {
+    const text = [
+      "Halo, saya sudah memesan paket Bundle Lamaran.",
+      `Nama: ${name}`,
+      `Total: ${formatRupiah(total)}`,
+      "",
+      "Invoice saya lampirkan di chat ini.",
+    ].join("\n");
+    window.open(
+      `https://wa.me/${INVOICE_WA_NUMBER}?text=${encodeURIComponent(text)}`,
+      "_blank"
+    );
+  };
+
+  // Web Share API: shares the actual image file (mobile browsers).
+  // The user picks WhatsApp and then the contact in the share sheet.
+  const handleShareImage = async () => {
+    if (!invoiceUrl) return;
+    try {
+      const blob = await (await fetch(invoiceUrl)).blob();
+      const file = new File([blob], "invoice.png", { type: "image/png" });
+      if (navigator.canShare?.({ files: [file] })) {
+        await navigator.share({ files: [file], title: "Invoice Bundle Lamaran" });
+      } else {
+        handleOpenWhatsApp();
+      }
+    } catch (err) {
+      // user cancelled the share sheet or it failed
+      console.error("Gagal membagikan invoice:", err);
+    }
+  };
+
+  const today = new Date().toLocaleDateString("id-ID", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+  });
+
   return (
     <div className="mx-auto max-w-6xl px-6 py-20 md:px-10">
       <div className="max-w-2xl">
@@ -98,18 +182,17 @@ export default function DekorasiPanggungContent() {
           className="text-[2.2rem] font-medium text-[#f3ecdd] md:text-[2.75rem]"
           style={{ fontFamily: "'Fraunces', serif" }}
         >
-          {popDekorPanggung.title}
+          {popBundleLamaran.title}
         </h1>
         <p
           className="mt-4 text-[1.05rem] leading-[1.7] text-[#cdd3c8]/80"
           style={{ fontFamily: "'Manrope', system-ui, sans-serif" }}
         >
-          {popDekorPanggung.description}
+          {popBundleLamaran.description}
         </p>
       </div>
 
-      {/* product grid -- swap the Sparkles icon for a real product photo
-          (next/image) per item once you have assets */}
+      {/* product grid */}
       <div className="mt-12 grid grid-cols-2 gap-5 sm:grid-cols-3 lg:grid-cols-4">
         {products.map((product) => {
           const qty = cart[product.nama]?.qty ?? 0;
@@ -119,8 +202,21 @@ export default function DekorasiPanggungContent() {
               key={product.nama}
               className="flex flex-col rounded-2xl border border-[#c6a15b]/25 bg-[#101a15] p-5"
             >
-              <div className="flex h-28 items-center justify-center rounded-xl bg-[#0b1410]">
-                <Sparkles className="h-10 w-10 text-[#c6a15b]" strokeWidth={1.5} />
+              <div className="ml-0">
+                {[product.foto].map((src, i) => (
+                  <div key={src} className="pl-0">
+                    <div className="relative aspect-[1/1]">
+                      <Image
+                        src={src}
+                        alt={`Dokumentasi panggung Anantha Production ${i + 1}`}
+                        fill
+                        sizes="(min-width: 1024px) 480px, 90vw"
+                        priority={i === 0}
+                        className="object-cover"
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
               <h3
                 className="mt-4 text-base font-medium text-[#f3ecdd]"
@@ -128,7 +224,7 @@ export default function DekorasiPanggungContent() {
               >
                 {product.nama}
               </h3>
-              <p className="mt-1 text-xs text-[#cdd3c8]/70">{product.kegunaan}</p>
+              <p className="mt-1 text-xs text-[#cdd3c8]/70">{product.layanan}</p>
               <div className="mt-3 flex items-center justify-between">
                 <span className="text-sm font-medium text-[#e8dcc4]">
                   {formatRupiah(price)}
@@ -166,7 +262,7 @@ export default function DekorasiPanggungContent() {
         })}
       </div>
 
-      {/* order form -- builds the pre-filled WhatsApp message on submit */}
+      {/* order form */}
       <div className="mt-16 grid gap-8 rounded-2xl border border-[#c6a15b]/25 bg-[#101a15] p-6 md:grid-cols-2 md:p-8">
         <div>
           <h2
@@ -284,18 +380,197 @@ export default function DekorasiPanggungContent() {
             </div>
           </div>
 
-          <Button
-            onClick={handleSubmit}
-            disabled={!canSubmit}
-            className="mt-6 bg-[#c6a15b] text-[#0b1410] hover:bg-[#e8c77a] disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            Pesan via WhatsApp
-          </Button>
+          <div className="mt-6 flex flex-col gap-3">
+            <Button
+              onClick={handleSubmit}
+              disabled={!canSubmit}
+              className="bg-[#c6a15b] text-[#0b1410] hover:bg-[#e8c77a] disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              Pesan via WhatsApp
+            </Button>
+            <Button
+              onClick={handleDownloadInvoice}
+              disabled={!canSubmit || downloading}
+              variant="outline"
+              className="border-[#c6a15b]/60 bg-transparent text-[#e8dcc4] hover:bg-[#c6a15b]/10 disabled:cursor-not-allowed disabled:opacity-40"
+            >
+              {downloading ? "Membuat invoice..." : "Download Invoice (PNG)"}
+            </Button>
+          </div>
           {!canSubmit && (
             <p className="mt-2 text-xs text-[#cdd3c8]/50">
               Isi nama, No. HP, dan pilih minimal satu item untuk melanjutkan.
             </p>
           )}
+        </div>
+      </div>
+
+      {/* Share popup, shown after the invoice is downloaded */}
+      {showShare && invoiceUrl && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4"
+          onClick={() => setShowShare(false)}
+          role="dialog"
+          aria-modal="true"
+          aria-label="Kirim invoice"
+        >
+          <div
+            className="max-h-[90vh] w-full max-w-sm overflow-y-auto rounded-2xl border border-[#c6a15b]/30 bg-[#101a15] p-6"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <h3
+              className="text-lg font-medium text-[#f3ecdd]"
+              style={{ fontFamily: "'Fraunces', serif" }}
+            >
+              Invoice terunduh
+            </h3>
+            <p className="mt-2 text-sm leading-relaxed text-[#cdd3c8]/80">
+              Kirim invoice ke WhatsApp +62 881-2783-841 agar pesanan diproses.
+            </p>
+
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src={invoiceUrl}
+              alt="Pratinjau invoice"
+              className="mt-4 w-full rounded-lg border border-[#c6a15b]/20"
+            />
+
+            <div className="mt-5 flex flex-col gap-3">
+              <Button
+                onClick={handleShareImage}
+                className="bg-[#c6a15b] text-[#0b1410] hover:bg-[#e8c77a]"
+              >
+                Bagikan gambar invoice
+              </Button>
+              <Button
+                onClick={handleOpenWhatsApp}
+                variant="outline"
+                className="border-[#c6a15b]/60 bg-transparent text-[#e8dcc4] hover:bg-[#c6a15b]/10"
+              >
+                Buka chat WhatsApp
+              </Button>
+              <button
+                onClick={() => setShowShare(false)}
+                className="text-xs text-[#cdd3c8]/60 hover:text-[#cdd3c8]"
+              >
+                Tutup
+              </button>
+            </div>
+            <p className="mt-4 text-xs leading-relaxed text-[#cdd3c8]/50">
+              Jika memilih &quot;Buka chat WhatsApp&quot;, lampirkan file invoice.png yang baru
+              diunduh ke chat tersebut.
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Invoice: rendered off-screen, captured to PNG by html-to-image.
+          Inline styles on purpose, they are the most reliable for capture.
+          Do NOT use display:none / hidden here or the PNG will be blank. */}
+      <div
+        aria-hidden="true"
+        style={{
+          position: "fixed",
+          left: -9999,
+          top: 0,
+          pointerEvents: "none",
+        }}
+      >
+        <div
+          ref={invoiceRef}
+          style={{
+            width: 480,
+            padding: 32,
+            background: "#0b1410",
+            color: "#f3ecdd",
+            fontFamily: "'Manrope', system-ui, sans-serif",
+          }}
+        >
+          <h2
+            style={{
+              fontFamily: "'Fraunces', serif",
+              fontSize: 22,
+              fontWeight: 500,
+              margin: 0,
+            }}
+          >
+            Invoice – {popBundleLamaran.title}
+          </h2>
+          <p style={{ fontSize: 12, opacity: 0.7, margin: "4px 0 0" }}>{today}</p>
+
+          <div style={{ marginTop: 20, fontSize: 13, lineHeight: 1.6 }}>
+            <div>Nama: {name}</div>
+            <div>No. HP: {phone}</div>
+            {dateFrom && dateUntil && (
+              <div>
+                Tanggal Sewa: {dateFrom} s/d {dateUntil}
+              </div>
+            )}
+          </div>
+
+          <div
+            style={{
+              marginTop: 20,
+              borderTop: "1px solid rgba(198,161,91,0.35)",
+              paddingTop: 12,
+            }}
+          >
+            {lines.map((l) => (
+              <div
+                key={l.product.nama}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  gap: 16,
+                  fontSize: 13,
+                  padding: "4px 0",
+                }}
+              >
+                <span>
+                  {l.product.nama} x{l.qty}
+                </span>
+                <span>{formatRupiah(parsePrice(l.product.harga) * l.qty)}</span>
+              </div>
+            ))}
+          </div>
+
+          <div
+            style={{
+              marginTop: 12,
+              borderTop: "1px solid rgba(198,161,91,0.35)",
+              paddingTop: 12,
+              fontSize: 13,
+            }}
+          >
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span>Subtotal</span>
+              <span>{formatRupiah(subtotal)}</span>
+            </div>
+            {discountLabel && (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  color: "#c6a15b",
+                }}
+              >
+                <span>{discountLabel}</span>
+                <span>-{formatRupiah(discount)}</span>
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontSize: 16,
+                fontWeight: 600,
+                marginTop: 6,
+              }}
+            >
+              <span>Total</span>
+              <span>{formatRupiah(total)}</span>
+            </div>
+          </div>
         </div>
       </div>
     </div>

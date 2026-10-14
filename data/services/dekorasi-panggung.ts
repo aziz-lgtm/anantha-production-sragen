@@ -1,44 +1,28 @@
-export const popDekorPanggung = {
+export const popBundleLamaran = {
   title: "Dekorasi Panggung",
   description:
-    "Layanan penataan dan dekorasi panggung profesional. Kami menyediakan backdrop tematik, floral arrangement, serta instalasi lighting estetis untuk menciptakan visual panggung yang memukau.",
+    "Layanan pengaturan dan dekorasi panggung profesional. Kami menyediakan backdrop tematik, rangkaian bunga, serta instalasi pencahayaan estetika untuk menciptakan panggung visual yang memukau.",
 };
 
 export type Product = {
   nama: string;
-  kegunaan: string;
-  harga: string;
+  layanan: string;
+  harga: string; // kept as the raw display string, e.g. "600,000"
+  foto: string; // DITAMBAH
 };
 
-// Placeholder data -- no product list was provided for this page yet.
-// Swap these out for the real packages/pricing whenever you have them;
-// the shape (nama, kegunaan, harga) matches the other service pages.
 export const products: Product[] = [
-  {
-    nama: "Backdrop Floral Garden",
-    kegunaan: "Dekorasi backdrop bertema taman bunga",
-    harga: "1,500,000",
-  },
-  {
-    nama: "Backdrop Elegant Gold",
-    kegunaan: "Dekorasi backdrop mewah nuansa emas",
-    harga: "1,800,000",
-  },
-  {
-    nama: "Paket Lighting Estetis",
-    kegunaan: "Instalasi lighting artistik untuk panggung",
-    harga: "1,200,000",
-  },
-  {
-    nama: "Floral Arrangement Set",
-    kegunaan: "Rangkaian bunga dekoratif untuk panggung",
-    harga: "900,000",
-  },
-  {
-    nama: "Backdrop Rustic Minimalis",
-    kegunaan: "Dekorasi backdrop bertema rustic minimalis",
-    harga: "1,300,000",
-  },
+  { nama: "Bola Juntai", layanan: "", harga: "15,000", foto: "/DEKORASI-DAN-BACKDROP/bola-juntai.png" },
+  { nama: "Bunga Artificial Putih Per Box", layanan: "", harga: "50,000", foto: "/DEKORASI-DAN-BACKDROP/bunga-artificial.png" },
+  { nama: " Busa Elastis Bunga", layanan: "6 buah. per buah 3rb", harga: "3,000", foto: "/DEKORASI-DAN-BACKDROP/busa-elastis-bunga.png" },
+  { nama: "Kain Backdrop Hitam Besar 10X4", layanan: "", harga: "", foto: "/DEKORASI-DAN-BACKDROP/kain-backdrop-hitam-besar.png" },
+  { nama: "Kain Backdrop Putih", layanan: "10 helai, per helai 20rb", harga: "20,000", foto: "/DEKORASI-DAN-BACKDROP/kain-backdrop-putih.png" },
+  { nama: "Karpet Bludru Abu-abu", layanan: "", harga: "15,000", foto: "/DEKORASI-DAN-BACKDROP/KARPET-BLUDRU-ABU-ABU-15.000.png" },
+  { nama: "Karpet Permadani", layanan: "", harga: "35,000", foto: "/DEKORASI-DAN-BACKDROP/KARPET-PERMADHANI-35.000.png" },
+  { nama: "Kursi Tiffany", layanan: "", harga: "20,000", foto: "/DEKORASI-DAN-BACKDROP/KURSI-TIFFANY-PUNYA-2-20.000.png" },
+  { nama: "Photoprops", layanan: "", harga: "5,000", foto: "/DEKORASI-DAN-BACKDROP/PHOTOPROPS-PUNYA-5-5.000.png" },
+  { nama: "Stand Bakcdrop Tipe Gawangan", layanan: "", harga: "25,000", foto: "/DEKORASI-DAN-BACKDROP/STAND BACKDROP-TIPE-GAWANGAN-25.000.png" },
+  { nama: "Kain Backdrop Putih", layanan: "", harga: "25,000", foto: "/DEKORASI-DAN-BACKDROP/STAND-BACKDROP-TIPE-T-25.000.png" },
 ];
 
 // +62 881-2783-841 with the "+" and separators stripped -- exact format
@@ -47,8 +31,9 @@ export const WHATSAPP_NUMBER = "628812783841";
 export const REFERRAL_CODE = "REZA123";
 export const REFERRAL_DISCOUNT = 0.1; // 10%
 
-// Same as Bundle Lamaran and Custom Property: referral discount only, no
-// weekend package rule (that 50% logic is specific to Sewa Alat Panggung).
+// Unlike Sewa Alat Panggung, this page has only one discount path -- the
+// referral code. No weekend package rule here, so there's nothing to
+// avoid stacking against.
 export function getDiscount(subtotal: number, referralValid: boolean) {
   if (referralValid) {
     return {
@@ -59,6 +44,7 @@ export function getDiscount(subtotal: number, referralValid: boolean) {
   return { amount: 0, label: null as string | null };
 }
 
+/** "600,000" -> 600000 */
 export function parsePrice(raw: string): number {
   return Number(raw.replace(/[^0-9]/g, ""));
 }
@@ -66,3 +52,7 @@ export function parsePrice(raw: string): number {
 export function formatRupiah(value: number): string {
   return `Rp${value.toLocaleString("id-ID")}`;
 }
+
+export const heroPhoto = {
+    pic: ""
+  }
